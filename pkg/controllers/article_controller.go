@@ -1,18 +1,22 @@
 package controllers
 
 import (
+	"blog-api/pkg/db"
 	"blog-api/pkg/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-var articles = []models.Article{
-	{ID: 1, Title: "First Article", Content: "Content of the first article", CreatedAt: "2024-11-01", UpdatedAt: "2024-11-01"},
-}
-
 // GetArticles - Retourne la liste des articles
 func GetArticles(c *gin.Context) {
+	var articles models.Article
+
+	if err := db.DB.Find(&articles).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les articles"})
+		return
+	}
 	c.JSON(http.StatusOK, articles)
 }
 
@@ -20,58 +24,98 @@ func GetArticles(c *gin.Context) {
 func GetArticle(c *gin.Context) {
 	id := c.Param("id")
 
-	for _, article := range articles {
-		if string(article.ID) == id {
-			c.JSON(http.StatusOK, article)
-			return
-		}
+	articleID, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid article ID"})
+		return
+	}
+	var article models.Article
+
+	if err := db.DB.First(&article, articleID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		return
 	}
 
-	c.JSON(http.StatusNotFound, gin.H{"message": "Article not found"})
+	c.JSON(http.StatusOK, article)
 }
 
 // CreateArticle - Crée un nouvel article
 func CreateArticle(c *gin.Context) {
 	var newArticle models.Article
 
+	// Lire le JSON et vérifier les erreurs
 	if err := c.ShouldBindJSON(&newArticle); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	articles = append(articles, newArticle)
+	// Ajouter à la liste des articles dans la base de données
+	if err := db.DB.Create(&newArticle).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de créer l'article"})
+		return
+	}
+
+	// Retourner la réponse
 	c.JSON(http.StatusCreated, newArticle)
 }
 
 // UpdateArticle - Met à jour un article par ID
 func UpdateArticle(c *gin.Context) {
-	id := c.Param("id")
 	var updatedArticle models.Article
+	id := c.Param("id")
+
+	//Convertir l'id en entier
+	articleID, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid article ID"})
+	}
 
 	if err := c.ShouldBindJSON(&updatedArticle); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	for i, article := range articles {
-		if string(article.ID) == id {
-			articles[i] = updatedArticle
-			c.JSON(http.StatusOK, updatedArticle)
-			return
-		}
+
+	var article models.Article
+
+	//Récupérer l'article à mettre à jour
+	if err := db.DB.First(&article, articleID); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
 	}
-	c.JSON(http.StatusNotFound, gin.H{"message": "Article not found"})
+	//Mettre à jour l'article
+	article.Title = updatedArticle.Title
+	article.Content = updatedArticle.Content
+	article.CreatedAt = updatedArticle.CreatedAt
+	article.UpdatedAt = updatedArticle.UpdatedAt
+
+	//Sauvegarder les changements dans la base de données
+	if err := db.DB.Save(&article).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de mettre à jour l'article"})
+		return
+	}
+
+	c.JSON(http.StatusOK, article)
 }
 
 // DeleteArticle - Supprime un article par ID
 func DeleteArticle(c *gin.Context) {
 	id := c.Param("id")
 
-	for i, article := range articles {
-		if string(article.ID) == id {
-			articles = append(articles[:i], articles[:i+1]...)
-			c.JSON(http.StatusOK, gin.H{"message": "Article deleted"})
-			return
-		}
+	articleID, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	c.JSON(http.StatusNotFound, gin.H{"message": "Article not found"})
+
+	var article models.Article
+
+	if err := db.DB.First(&article, articleID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "impossible de récupérer l'article à supprimer"})
+		return
+	}
+
+	if err := db.DB.Delete(&article, articleID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":"Impossible de supprimer l'article"})
+		return
+	} 
+	c.JSON(http.StatusOK, gin.H{"message": "article found and deleted"})
 }

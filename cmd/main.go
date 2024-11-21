@@ -1,12 +1,19 @@
 package main
 
-import "blog-api/pkg/routes"
+import (
+	"blog-api/pkg/db"
+	"blog-api/pkg/routes"
+	"log"
+)
 
 func main() {
-	//Configuration des routes
+	// Initialiser la base de données
+	db.InitDatabase()
+
+	// Configurer les routes
 	router := routes.SetupRouter()
 
+	log.Println("Le serveur fonctionne sur http://localhost:8080")
 	//Démarrer le serveur
-	router.Run(":8080") //sur le port 8080
-
+	router.Run(":8080")
 }
