@@ -68,6 +68,7 @@ func UpdateArticle(c *gin.Context) {
 	articleID, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid article ID"})
+		return
 	}
 
 	if err := c.ShouldBindJSON(&updatedArticle); err != nil {
@@ -78,8 +79,9 @@ func UpdateArticle(c *gin.Context) {
 	var article models.Article
 
 	//Récupérer l'article à mettre à jour
-	if err := db.DB.First(&article, articleID); err != nil {
+	if err := db.DB.First(&article, articleID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		return
 	}
 	//Mettre à jour l'article
 	article.Title = updatedArticle.Title
@@ -114,8 +116,8 @@ func DeleteArticle(c *gin.Context) {
 	}
 
 	if err := db.DB.Delete(&article, articleID).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":"Impossible de supprimer l'article"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de supprimer l'article"})
 		return
-	} 
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "article found and deleted"})
 }
