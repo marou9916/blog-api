@@ -1,0 +1,17 @@
+basePath: /
+host: localhost:8080
+info:
+  contact:
+    email: oumar.ndiaye447@gmail.com
+    name: Support API
+    url: http://localhost:8080
+  description: Cette API gère un blog simple avec des articles. Elle permet de créer,
+    lire, mettre à jour et supprimer des articles.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://localhost:8080/terms/
+  title: Blog API Documentation
+  version: "1.0"
+paths: {}
+swagger: "2.0"

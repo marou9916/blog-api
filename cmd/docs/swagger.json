@@ -1,0 +1,21 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Cette API gère un blog simple avec des articles. Elle permet de créer, lire, mettre à jour et supprimer des articles.",
+        "title": "Blog API Documentation",
+        "termsOfService": "http://localhost:8080/terms/",
+        "contact": {
+            "name": "Support API",
+            "url": "http://localhost:8080",
+            "email": "oumar.ndiaye447@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {}
+}
