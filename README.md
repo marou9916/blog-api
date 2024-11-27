@@ -104,7 +104,7 @@ Les objectifs principaux de ce projet sont :
 
 
 ## Structure du projet 
-
+```
 .
 ├── cmd
 │   └── main.go            # Point d'entrée de l'application
@@ -116,7 +116,7 @@ Les objectifs principaux de ce projet sont :
 ├── go.mod                 # Dépendances du projet
 ├── gorm.db                # Base de données SQLite
 ├── README.md              # Documentation du projet
-
+```
 
 ## Documentation API
 
@@ -152,11 +152,15 @@ Ce projet m'a permis de travailler et de renforcer plusieurs compétences clés�
 
 ## Améliorations futures
 
-    Ajouter une gestion des utilisateurs et l'authentification JWT.
-    Intégrer une base de données plus robuste comme PostgreSQL.
-    Mettre en place des tests unitaires et des tests d'intégration.
-    Ajouter un système de pagination pour les listes d'articles.
-    Implémenter un déploiement automatisé (CI/CD).
+    - **Ajouter une gestion des utilisateurs et l'authentification JWT.**
+
+    - **Intégrer une base de données plus robuste comme PostgreSQL.**
+
+    - **Mettre en place des tests unitaires et des tests d'intégration.**
+
+    - **Ajouter un système de pagination pour les listes d'articles.**
+
+    - **Implémenter un déploiement automatisé (CI/CD).**
 
 ## Contributions 
 
