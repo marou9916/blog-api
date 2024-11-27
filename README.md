@@ -64,6 +64,7 @@ Les objectifs principaux de ce projet sont :
 - **Framework HTTP** : [Gin](https://github.com/gin-gonic/gin)
 - **ORM** : [Gorm](https://gorm.io/)
 - **Base de données** : SQLite
+- **Tests des requêtes** : Postman
 - **Documentation API** : Swagger
 
 ---
